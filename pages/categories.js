@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import axios from "axios";
 import { withSwal } from "react-sweetalert2";
+import Spinner from "@/components/Spinner";
         
 
 function Categories({swal}) {
@@ -10,12 +11,15 @@ function Categories({swal}) {
   const [parentCategory,setParentCategory] = useState('');
   const [categories,setCategories] = useState([]);
   const [properties,setProperties] = useState([]);
+  const [isLoading,setIsLoading] = useState(false);
   useEffect(() => {
     fetchCategories();
   }, [])
   function fetchCategories() {
+    setIsLoading(true);
     axios.get('/api/categories').then(result => {
       setCategories(result.data);
+      setIsLoading(false);
     });
   }
   async function saveCategory(ev){
@@ -114,7 +118,7 @@ function Categories({swal}) {
                   value={parentCategory}>
             <option value="">No parent category</option>
             {categories.length > 0 && categories.map(category => (
-              <option key={category._id} value={category._id}>{category.name}</option>
+              <option key={category._id}value={category._id}>{category.name}</option>
             ))}
           </select>
         </div>
@@ -127,7 +131,7 @@ function Categories({swal}) {
             Add new property
           </button>
           {properties.length > 0 && properties.map((property,index) => (
-            <div key={property.value} className="flex gap-1 mb-2">
+            <div key={index}className="flex gap-1 mb-2">
               <input type="text"
                      value={property.name}
                      className="mb-0"
@@ -135,12 +139,12 @@ function Categories({swal}) {
                      placeholder="property name (example: color)"/>
               <input type="text"
                      className="mb-0"
-                     value={property.values}
                      onChange={ev =>
                        handlePropertyValuesChange(
                          index,
                          property,ev.target.value
                        )}
+                     value={property.values}
                      placeholder="values, comma separated"/>
               <button
                 onClick={() => removeProperty(index)}
@@ -179,6 +183,15 @@ function Categories({swal}) {
           </tr>
           </thead>
           <tbody>
+          {isLoading && (
+            <tr>
+              <td colSpan={3}>
+                <div className="py-4">
+                  <Spinner fullWidth={true} />
+                </div>
+              </td>
+            </tr>
+          )}
           {categories.length > 0 && categories.map(category => (
             <tr key={category._id}>
               <td>{category.name}</td>

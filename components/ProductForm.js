@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Spinner from "./Spinner";
 import { ReactSortable } from "react-sortablejs";
-
 export default function ProductForm({
   _id,
   title:existingTitle,
@@ -23,10 +22,13 @@ export default function ProductForm({
   const [goToProducts,setGoToProducts] = useState(false);
   const [isUploading,setIsUploading] = useState(false);
   const [categories,setCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
   const router = useRouter();
   useEffect(() => {
+    setCategoriesLoading(true);
     axios.get('/api/categories').then(result => {
       setCategories(result.data);
+      setCategoriesLoading(false);
     })
   }, []);
   async function saveProduct(ev) {
@@ -97,9 +99,12 @@ export default function ProductForm({
                 onChange={ev => setCategory(ev.target.value)}>
           <option value="">Uncategorized</option>
           {categories.length > 0 && categories.map(c => (
-            <option key={c._id} value={c._id}>{c.name}</option>
+            <option key={category._id}value={c._id}>{c.name}</option>
           ))}
         </select>
+        {categoriesLoading && (
+          <Spinner />
+        )}
         {propertiesToFill.length > 0 && propertiesToFill.map(p => (
           <div key={p.name} className="">
             <label>{p.name[0].toUpperCase()+p.name.substring(1)}</label>
@@ -110,7 +115,7 @@ export default function ProductForm({
                       }
               >
                 {p.values.map(v => (
-                  <option key={v} value={v}>{v}</option>
+                  <option key={v}value={v}>{v}</option>
                 ))}
               </select>
             </div>
@@ -125,7 +130,7 @@ export default function ProductForm({
             className="flex flex-wrap gap-1"
             setList={updateImagesOrder}>
             {!!images?.length && images.map(link => (
-              <div key={link} className="h-24 bg-white p-1 shadow-sm rounded-sm border border-gray-200">
+              <div key={link} className="h-24 bg-white p-4 shadow-sm rounded-sm border border-gray-200">
                 <img src={link} alt="" className="rounded-lg"/>
               </div>
             ))}
