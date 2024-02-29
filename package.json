@@ -20,7 +20,7 @@
     "git": "^0.1.5",
     "mime-types": "^2.1.35",
     "mongodb": "^5.1.0",
-    "mongoose": "^7.0.0",
+    "mongoose": "^7.6.7",
     "multiparty": "^4.2.3",
     "next": "13.2.3",
     "next-auth": "^4.20.1",

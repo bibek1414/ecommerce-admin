@@ -1,6 +1,6 @@
-import { MongoDBAdapter } from '@auth/mongodb-adapter';
-import NextAuth, { getServerSession } from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
+import { MongoDBAdapter } from '@auth/mongodb-adapter'
+import NextAuth, { getServerSession } from 'next-auth'
+import GoogleProvider from 'next-auth/providers/google'
 import clientPromise from '../../../lib/mongodb';
 import { mongooseConnect } from '@/lib/mongoose';
 import { Admin } from '@/models/Admin';
@@ -11,7 +11,6 @@ async function isAdminEmail(email) {
 }
 
 export const authOptions = {
-  secret: process.env.SECRET,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_ID,
