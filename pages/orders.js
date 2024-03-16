@@ -37,28 +37,38 @@ export default function OrdersPage() {
               </td>
             </tr>
           )}
-          {!isLoading && orders.length > 0 && orders.map(order => order.line_items.map((item, index) => (
-            <tr key={order._id + '-' + index}>
-              {index === 0 && (
-                <>
-                  <td rowSpan={order.line_items.length}>{(new Date(order.createdAt)).toLocaleString()}</td>
-                  <td rowSpan={order.line_items.length}>
-                    {order.name} {order.email}<br />
-                    {order.city} {order.postalCode} {order.country}<br />
-                    {order.streetAddress}
-                  </td>
-                </>
-              )}
-              <td>
-                {item.price_data?.product_data.name}
-              </td>
-              <td>
-                {item.quantity}
-              </td>
+          {!isLoading && orders.length > 0 && orders.flatMap((order, orderIndex) => [
+            ...order.line_items.map((item, index) => (
+              <tr key={order._id + '-' + index}>
+                {index === 0 && (
+                  <>
+                    <td rowSpan={order.line_items.length + 1}>{(new Date(order.createdAt)).toLocaleString()}</td>
+                    <td rowSpan={order.line_items.length + 1}>
+                      {order.name} {order.email}<br />
+                      {order.city} {order.postalCode} {order.country}<br />
+                      {order.streetAddress}
+                    </td>
+                  </>
+                )}
+                <td>
+                  {item.price_data?.product_data.name}
+                </td>
+                <td>
+                  {item.quantity}
+                </td>
+              </tr>
+            )),
+            <tr key={`separator-${order._id}`} className="order-separator">
+              <td colSpan={4}><hr /></td>
             </tr>
-          )))}
+          ])}
         </tbody>
       </table>
+      <style jsx>{`
+        .order-separator td {
+          padding: 10px 0; /* Add padding to make the separator more noticeable */
+        }
+      `}</style>
     </Layout>
   );
 }
