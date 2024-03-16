@@ -23,7 +23,7 @@ export default function OrdersPage() {
           <tr>
             <th>Date</th>
             <th>Recipient</th>
-            <th>Products</th>
+            <th>Product</th>
             <th>Quantity</th>
           </tr>
         </thead>
@@ -37,29 +37,28 @@ export default function OrdersPage() {
               </td>
             </tr>
           )}
-          {orders.length > 0 && orders.map(order => (
-            <tr key={order._id}>
-              <td>{(new Date(order.createdAt)).toLocaleString()}</td>
+          {!isLoading && orders.length > 0 && orders.map(order => order.line_items.map((item, index) => (
+            <tr key={order._id + '-' + index}>
+              {index === 0 && (
+                <>
+                  <td rowSpan={order.line_items.length}>{(new Date(order.createdAt)).toLocaleString()}</td>
+                  <td rowSpan={order.line_items.length}>
+                    {order.name} {order.email}<br />
+                    {order.city} {order.postalCode} {order.country}<br />
+                    {order.streetAddress}
+                  </td>
+                </>
+              )}
               <td>
-                {order.name} {order.email}<br />
-                {order.city} {order.postalCode} {order.country}<br />
-                {order.streetAddress}
+                {item.price_data?.product_data.name}
               </td>
               <td>
-                {order.line_items.map((l, index) => (
-                  <div key={index}>
-                    {l.price_data?.product_data.name}<br />
-                  </div>
-                ))}
-              </td>
-              <td>
-                {order.line_items.reduce((total, item) => total + item.quantity, 0)}
+                {item.quantity}
               </td>
             </tr>
-          ))}
+          )))}
         </tbody>
       </table>
     </Layout>
   );
 }
-  
